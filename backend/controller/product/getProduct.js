@@ -1,0 +1,28 @@
+   const productModule = require("../../models/productModel")
+   
+  
+  const getProductController= async(req,res)=>{
+    try{
+      const allProduct=await productModule.find().sort({createdAt:-1})
+       
+     
+      res.json({
+        message:"All Product",
+        success:true,
+        error:false,
+        data:allProduct
+      })
+
+
+
+    }catch(err){
+          res.status(400).json({
+            message:err.message,
+            error:true,
+            success:false
+        })
+    }
+}
+
+
+module.exports=getProductController;

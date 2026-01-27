@@ -17,8 +17,7 @@ const addToCartController=async(req,res)=>{
 }
 
 
-
-     const isProductIsAvaliable=await addToCartModel.findOne({productId});
+     const isProductIsAvaliable=await addToCartModel.findOne({productId, userId:currUser});
      console.log("isproductavaliav",isProductIsAvaliable)
 
      if(isProductIsAvaliable){

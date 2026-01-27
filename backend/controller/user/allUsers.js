@@ -4,7 +4,7 @@
 async function  allUsers(req,res){
     try{
       
-        console.log("userid  all users",req.userId)
+      //  console.log("userid  all users",req.userId)
          
          const allUsers=await userModel.find();
 

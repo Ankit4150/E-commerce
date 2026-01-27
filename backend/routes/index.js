@@ -24,7 +24,7 @@ const searchProduct=require("../controller/product/searchProduct");
 const filterProductController=require("../controller/product/filterProduct")
 const uesrEmail =require("../controller/user/email");
 const changePassword =require("../controller/user/changePassword");
-
+ const paymentController=require("../controller/order/paymentController")
 
  
     router.post("/signup",userSignUpController);
@@ -48,6 +48,7 @@ const changePassword =require("../controller/user/changePassword");
      router.post("/filter-product",filterProductController);
       router.post('/email-send', uesrEmail );
       router.post("/change-password",changePassword);
+      router.post("/checkout",authToken,paymentController);
 
 
 module.exports=router;

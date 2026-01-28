@@ -1,5 +1,5 @@
 
- const addToCartModel =require("../../models/cartProduct");
+ const addToCartModel =require("../../models/cartProduct")
 
 
 const addToCartController=async(req,res)=>{
@@ -18,7 +18,7 @@ const addToCartController=async(req,res)=>{
 
 
      const isProductIsAvaliable=await addToCartModel.findOne({productId, userId:currUser});
-     console.log("isproductavaliav",isProductIsAvaliable)
+     console.log("isproductavaliav",isProductIsAvaliable);
 
      if(isProductIsAvaliable){
         return res.json({

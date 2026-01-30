@@ -33,7 +33,7 @@ async function UploadProductController(req,res) {
 
 
 
-}
+};
 
 
 module.exports=UploadProductController;

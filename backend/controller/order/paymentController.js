@@ -8,7 +8,7 @@
     const user= await  userModel.findOne({_id: req.userId});
 
 
-     const cartItems=req.body;
+     const {cartItems}=req.body;
  
      console.log("cart items",cartItems);
 
@@ -16,14 +16,18 @@
           submit_type:"pay",
           mode:"payment",
           payment_method_types:['card'],
-          billing_address_collections:'auto',
+          billing_address_collection:'auto',
           shipping_options:[
             {
-                shipping_rate:"shr_1SnHaGK4H7kIXeiTA73o4tv1"
+                shipping_rate:"shr_1SwPyaK4H7kIXeiTZ2JSJu1E"
             }
           ],
-          costumer_email:user.email,
-          line_itmes:cartItem.map((item,index)=>{
+          customer_email:user.email,
+            metadata : {
+                userId : req.userId
+            },
+
+          line_items:cartItems.map((item,index)=>{
             return {
                 price_data:{
                     currency:"inr",
@@ -34,7 +38,7 @@
                       productId:item.productId._id
                     }
                     },
-                    unit_amount:item>productId.sellingPrice
+                    unit_amount:item.productId.sellingPrice*100
                 },
                 adjustable_quantity:{
                   enabled:true,
@@ -45,11 +49,11 @@
             }
           }),
           success_url:"http://localhost:3000/success",
-          cancle_url:"http://localhost:3000/cancle"
+          cancel_url:"http://localhost:3000/cancel"
       }
     
    const session = await stripe.checkout.sessions.create(params);
-
+     res.status(303).json(session);
 
   }catch(err){
        res.status(400).json({

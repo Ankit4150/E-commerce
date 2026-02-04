@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
  import  displayINRcurrency from "../helpers/displayCurrency"
  import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import {loadStripe} from '@stripe/stripe-js';
 
    import Summaryapi from '../common';
 import Context from "../context/index"
@@ -125,6 +126,7 @@ export default function Cart() {
     const paymentHandle=async()=>{
      // alert("hii")
      console.log("payment")
+      //const stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
          const  response=await fetch(Summaryapi.payment.url,{
             method:Summaryapi.payment.method,
         credentials:"include",
@@ -135,6 +137,11 @@ export default function Cart() {
          })
          console.log("payment")
         const   responseData=await response.json();
+
+             if (responseData?.url) {
+       window.location.href = responseData.url;
+      }
+
          console.log("payment response ", responseData)
     }
 

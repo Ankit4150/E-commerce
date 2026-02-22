@@ -6,6 +6,7 @@ import {useParams} from "react-router-dom"
   import displayINRcurrency from "../helpers/displayCurrency"
   import VeticalCardProduct from "../components/verticalCardProduct";
   import CategryWiseProductDisplay from "../components/CategoryWiseProductDispaly"
+import { toast } from 'react-toastify';
 
 export default function ProductDetails() {
 
@@ -19,6 +20,9 @@ export default function ProductDetails() {
     price:"",
     sellingPrice:""
    })
+
+   const [review,setReview]=useState("");
+   const [getReview,setGetRevie]=useState([]);
 
    const params=useParams();
  
@@ -36,9 +40,77 @@ export default function ProductDetails() {
    const productImageListLoading=new Array(4).fill(null);
    
 
+
+   const reviewonchange=(e)=>{
+       setReview(e.target.value);
+      
+   }
+
+   const  reviewhandler=async(e)=>{
+    // console.log("usrl revie",Summaryapi.sendReview.url)
+       e.preventDefault();
+       const response=await fetch(Summaryapi.sendReview.url,{
+        method:Summaryapi.sendReview.method,
+        credentials:"include",
+        headers:{
+          "content-type":"application/json",
+        },
+        body:JSON.stringify({review,productId:params?.id})
+       })
+      
+       const responseData=await response.json();
+        console.log("response", responseData.messsage)
+       if(responseData.success){
+        toast.success("review successfully")
+         setReview(""); 
+         fetachAllReview()
+       }else{
+        toast.error("plese login");
+       }
+
+   }
+ 
+    const fetachAllReview=async()=>{
+      console.log("params id:", params?.id);
+        const response=await fetch(`${Summaryapi.getReview.url}/${params?.id}`,{
+          method:Summaryapi.method,
+          headers:{
+             "content-type":"application/json"
+          },
+          
+        })
+       const  reponsedata=await response.json();
+         setGetRevie(reponsedata.data)
+         console.log("reviw data",reponsedata.data)
+    }
+
+    const reviewdelete=async(revieid,userid)=>{
+
+      console.log("review id ",revieid);
+      console.log("user id",userid);
+        const response= await fetch(Summaryapi.deleteReview.url,{
+          method:Summaryapi.deleteReview.method,
+          credentials:"include",
+          headers:{
+            "content-type":"application/json"
+          },
+          body:JSON.stringify({reviewId:revieid,userid:userid})
+        })
+        const responseData=await response.json();
+        if(responseData.success){
+          toast.success(responseData.messsage);
+          setGetRevie(prev =>
+            prev.filter(item => item._id !== revieid)
+           );
+        }else{
+          toast.error(responseData.message);
+        }
+    }
+
  
    const fetchProductDetails=async()=>{
     setLoading(true)
+    
     const response=await fetch(Summaryapi.productDetails.url,{
       method:Summaryapi.productDetails.method,
       headers:{
@@ -53,11 +125,12 @@ export default function ProductDetails() {
     setActiveImage(dataResponse?.data?.productImage[0])
    }
 
-  console.log("data",data)
+ // console.log("data product details",data)
 
 
  useEffect(()=>{
    fetchProductDetails();
+  fetachAllReview();
  },[ params])
 
 
@@ -68,7 +141,7 @@ export default function ProductDetails() {
  const handleZoomImage=useCallback((e)=>{
   setZoomImage(true)
   const {left,top,width,height}=e.target.getBoundingClientRect();
-  console.log("coordinate",left,top,width,height);
+  //console.log("coordinate",left,top,width,height);
 
    const x=(e.clientX-left)/width
     const y=(e.clientY-top)/height
@@ -84,6 +157,9 @@ export default function ProductDetails() {
    const handleLeaveZoom=()=>{
       setZoomImage(false)
    }
+   
+
+
 
   return (
     <div className='container mx-auto p-4 '>
@@ -202,7 +278,40 @@ export default function ProductDetails() {
                      <p className='text-slate-600 font-medium my-1'>Description :</p>
                      <p>{data?.despcription}</p>
                    </div>
+                  {/**reviews  */}
+                    
+                     <div  className=''>
+                      <form className='flex flex-col' onSubmit={reviewhandler}>
+                      <label for="comments " className='font-bold  text-red-600'>comments  </label>
+                      <textarea name='review' type="text" placeholder='write somethings'id='comment '
+                       className='w-[300px] h-[100px] border-2 hover:border-blue-400 
+                       transition duration-300 rounded-md p-2 focus:outline-none ' value={review}
+                       onChange={reviewonchange}
+                        ></textarea>
+                      <button className='w-[70px] h-[35px] border-2   rounded-md hover:bg-green-500 hover:text-white transition mt-2'>submit</button>
+                      </form>
+                      </div>
 
+                     <div> 
+                           <h2 className='font-bold'>All Review </h2>
+                           <div className='mt-5  grid grid-cols-2 gap-4'>
+                          {
+                            getReview.map((item)=>(
+                             <div key={item._id}> 
+                             <div className='border-2 rounded-md  flex flex-col   gap-2 w-[300px] min-h-[90px] '>
+                              <h2 className='font-bold'>@{item.userId.name}</h2>
+                               <p> {item.review}</p>
+                                 <button  onClick={()=> reviewdelete(item._id,item.userId._id)} className='border-none bg-black text-white rounded hover:bg-slate-600 w-[100px]'>Delete</button>
+                             
+                             </div>
+                            
+                             </div>
+                            ))
+                          }
+                          </div>
+                      </div>
+                     
+                    {/**reviews  */}
                   </div>
                 )
               }

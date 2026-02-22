@@ -27,6 +27,10 @@ const changePassword =require("../controller/user/changePassword");
  const paymentController=require("../controller/order/paymentController")
  const  webhook =require("../controller/order/webhook");
  const orderList =require("../controller/order/order.controller")
+ const Reviewsend =require ("../controller/product/reviewsend")
+ const Getreview=require("../controller/product/getReview");
+ const reviewDelete=require("../controller/product/reviewDelete")
+
 
  
     router.post("/signup",userSignUpController);
@@ -53,6 +57,9 @@ const changePassword =require("../controller/user/changePassword");
       router.post("/checkout",authToken,paymentController);
       router.post("/webhook",webhook)
       router.get("/order-list",authToken,orderList);
-
+      router.post("/send-review",authToken,Reviewsend);
+      router.get("/get-review/:productId",Getreview);
+      router.post("/delete-review",authToken,reviewDelete);
+      
 
 module.exports=router;

@@ -92,6 +92,18 @@ const Summaryapi={
     getOrder:{
            url:`${backendDomain}/api/order-list`,
         method:"get"
+    },
+    sendReview:{
+        url:`${backendDomain}/api/send-review`,
+        method:"post"
+    },
+    getReview:{
+        url:`${backendDomain}/api/get-review`,
+        method:"get"
+    },
+    deleteReview:{
+          url:`${backendDomain}/api/delete-review`,
+          method:"post"
     }
     
 }

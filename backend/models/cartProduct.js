@@ -4,7 +4,7 @@ const mongoose=require("mongoose");
 const addToCart=mongoose.Schema({
    productId:{
     ref:"product",
-    type:String
+    type:mongoose.Schema.Types.ObjectId
 
    },
    quantity:Number,

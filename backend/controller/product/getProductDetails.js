@@ -3,6 +3,7 @@
   const getProductDetails=async(req ,res)=>{
     try{
       const {productId}=req.body;
+      
 
          const product=await productModule.findById(productId);
 
